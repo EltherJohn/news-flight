@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "653343019542",
+    "project_id": "newsflight-og",
+    "storage_bucket": "newsflight-og.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653343019542:android:85852a746de53a699d5b37",
+        "android_client_info": {
+          "package_name": "com.example.nf_og"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjMzU6KNABbExCA77lHDLCWmD0bQnMVBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
