@@ -26,7 +26,7 @@ void main() async {
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
       child: const MyApp(),
-      )
+    ),
   );
 }
 
@@ -35,23 +35,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'news_flights',
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'news_flights',
 
-      //* Removing the debug banner
-      debugShowCheckedModeBanner: false,
+          //* Removing the debug banner
+          debugShowCheckedModeBanner: false,
 
-      //* Setting up themedata of the app
-      theme: Provider.of<ThemeProvider>(context).themeData,
-      home: const AuthStateChange(),
+          //* Setting up themedata of the app
+          theme: themeProvider.themeData,
+          home: const AuthStateChange(),
 
-      //* App routes
-      routes: {
-        '/intro': (context) => const Intro(),
-        '/auth': (context) => const AuthStateChange(),
-        '/onboard': (context) => const Onboard(),
-        '/onboard/signin': (context) => const SignIn(),
-        '/onboard/signup': (context) => const SignUp(),
+          //* App routes
+          routes: {
+            '/intro': (context) => const Intro(),
+            '/auth': (context) => const AuthStateChange(),
+            '/onboard': (context) => const Onboard(),
+            '/onboard/signin': (context) => const SignIn(),
+            '/onboard/signup': (context) => const SignUp(),
+          },
+        );
       },
     );
   }

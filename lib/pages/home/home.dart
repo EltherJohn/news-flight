@@ -7,11 +7,13 @@ import 'package:nf_og/pages/home/components/category_title.dart';
 import 'package:nf_og/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:nf_og/services/news.dart';
+import 'package:nf_og/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   List<ArticleModel> articles;
 
-  Home({super.key, required this.articles});
+  Home({Key? key, required this.articles}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -46,9 +48,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeData = themeProvider.themeData;
+
     return Scaffold(
       extendBody: true,
-      backgroundColor: kDarkColor,
+      backgroundColor: themeData.backgroundColor,
       body: (_loading)
           ? GestureDetector(
               child: Center(

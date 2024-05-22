@@ -8,6 +8,7 @@ class DefaultTextField extends StatelessWidget {
   final dynamic validator;
   final dynamic keyboardType, obscureText;
   final VoidCallback? isObscure;
+  
 
   const DefaultTextField(
     {
@@ -19,6 +20,7 @@ class DefaultTextField extends StatelessWidget {
     required this.validator,
     this.obscureText = false,
     this.isObscure,
+    
   });
 
   @override

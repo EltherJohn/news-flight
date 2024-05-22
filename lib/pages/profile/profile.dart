@@ -186,7 +186,8 @@ class _ProfileState extends State<Profile> {
 
       // Your existing code for processing the data and returning the profile UI
       userGlbData = data;
-      bmArticles = userGlbData['bookmark'] ?? {}; // Use an empty map if 'bookmark' is null
+      bmArticles = userGlbData['bookmark'] ??
+          {}; // Use an empty map if 'bookmark' is null
 
       bm = [];
 
@@ -224,30 +225,45 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    IconData themeIcon;
+    switch (themeProvider.themeMode) {
+      case ThemeMode.light:
+        themeIcon = Icons.wb_sunny;
+        break;
+      case ThemeMode.dark:
+        themeIcon = Icons.nights_stay;
+        break;
+      case ThemeMode.system:
+      default:
+        themeIcon = Icons.settings;
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0.0,
-        leading: GestureDetector(
-          onTap: () {
-            Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+        leading: PopupMenuButton<ThemeMode>(
+          onSelected: (ThemeMode mode) {
+            themeProvider.setThemeMode(mode);
           },
-          child: Container(
-            padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              color: Colors.transparent, // Set background color to transparent
-              borderRadius: BorderRadius.circular(10.0),
+          icon: Icon(themeIcon, color: Theme.of(context).colorScheme.secondary),
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: ThemeMode.light,
+              child: Text('Light Mode'),
             ),
-            child: Icon(
-              Theme.of(context).brightness == Brightness.light
-                  ? Icons.wb_sunny
-                  : Icons.nights_stay,
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondary, // Use secondary color
+            PopupMenuItem(
+              value: ThemeMode.dark,
+              child: Text('Dark Mode'),
             ),
-          ),
+            PopupMenuItem(
+              value: ThemeMode.system,
+              child: Text('System Mode'),
+            ),
+          ],
         ),
         actions: [
           editInfoButton(context),

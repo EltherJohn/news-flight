@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Add this import
 import 'package:nf_og/constant.dart';
 import 'package:nf_og/pages/intro/components/empty_appbar.dart';
 import 'package:nf_og/pages/onboard/components/top_logo.dart';
@@ -15,30 +16,52 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final formKey = GlobalKey<FormState>();
-  
-  //* 1
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  
-  //* sign in button nga function
+
   Future signIn() async {
-    
     try {
-      //* gi sign in ang imong account gamit ang details nga naa sa textfield
-      //* e verify ang details if na exist ba  sa database
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      //* IMPORTANTE NI IF MAG LOG IN
-      
-      //* mo navigate siya sa home page
-      Navigator.of(context).pushNamedAndRemoveUntil('/auth', (route) => false);
-      
-      
+      // Check the user's report count
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .get();
+        final userData = userDoc.data();
+
+        if (userData != null && userData['reportCount'] >= 3) {
+          // Show account disabled message and sign out the user
+          await FirebaseAuth.instance.signOut();
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Account Disabled'),
+                content: const Text('Your account has been disabled due to multiple reports.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
+
+        // Navigate to the home page if the account is not disabled
+        Navigator.of(context).pushNamedAndRemoveUntil('/auth', (route) => false);
+      }
     } on FirebaseAuthException catch (e) {
-      
       formKey.currentState!.validate();
       showDialog(
         context: context,
@@ -57,7 +80,7 @@ class _SignInState extends State<SignIn> {
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,19 +92,12 @@ class _SignInState extends State<SignIn> {
           child: Column(
             children: [
               const TopLogo(),
-              // SigninCTF(emailController: _emailController, passwordController: _passwordController),
               SignInCTF(formKey: formKey, emailController: _emailController, passwordController: _passwordController),
               BottomWidgets(
                 cfbText1: 'Sign Up',
                 cfbText2: 'Don\'t have an account? ',
                 btnText: 'Sign In',
                 onPressed1: () {
-                  // Navigator.push(context, MaterialPageRoute(
-                  //   builder: (context) {
-                  //     return SignUp();
-                  //   },
-                  //                  ));
-                  
                   Navigator.of(context).pushReplacementNamed('/onboard/signup');
                 },
                 onPressed2: signIn,

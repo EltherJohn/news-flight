@@ -4,29 +4,42 @@ import 'package:nf_og/pages/forgot/forgot.dart';
 import 'package:nf_og/pages/signup/components/clear_full_button.dart';
 import 'package:nf_og/pages/signup/components/default_textfield.dart';
 
-class SignInCTF extends StatelessWidget {
+class SignInCTF extends StatefulWidget {
   const SignInCTF({
     super.key,
     required this.formKey,
-    required TextEditingController emailController,
-    required TextEditingController passwordController,
-  }) : _emailController = emailController, _passwordController = passwordController;
+    required this.emailController,
+    required this.passwordController,
+  });
 
   final GlobalKey<FormState> formKey;
-  final TextEditingController _emailController;
-  final TextEditingController _passwordController;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+
+  @override
+  _SignInCTFState createState() => _SignInCTFState();
+}
+
+class _SignInCTFState extends State<SignInCTF> {
+  bool _isPasswordVisible = false;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Form(
-        key: formKey,
+        key: widget.formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             DefaultTextField(
               validator: emailValidator,
-              controller: _emailController,
+              controller: widget.emailController,
               hintText: 'Email Address',
               icon: Icons.email,
               keyboardType: TextInputType.emailAddress,
@@ -37,11 +50,12 @@ class SignInCTF extends StatelessWidget {
             ),
             DefaultTextField(
               validator: passwordValidator,
-              controller: _passwordController,
+              controller: widget.passwordController,
               hintText: 'Password',
               icon: Icons.lock,
               keyboardType: TextInputType.visiblePassword,
-              obscureText: true,
+              obscureText: !_isPasswordVisible,
+              isObscure: _togglePasswordVisibility,
             ),
             const SizedBox(
               height: kFixPadding,

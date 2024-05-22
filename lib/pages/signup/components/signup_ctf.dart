@@ -29,6 +29,19 @@ class _SignUpCTFState extends State<SignUpCTF> {
   bool _isObscure = true;
   bool _isObscure1 = true;
 
+  void _validatePasswords() {
+    if (widget._passwordController1.text != widget._passwordController2.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Passwords do not match. Please make sure both passwords are the same.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      // Passwords match, you can proceed with further actions here if needed
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -91,6 +104,13 @@ class _SignUpCTFState extends State<SignUpCTF> {
                 });
               },
             ),
+            const SizedBox(
+              height: kDefaultPadding,
+            ),
+            // ElevatedButton(
+            //   onPressed: _validatePasswords,
+            //   child: Text('Sign Up'),
+            // ),
           ],
         ),
       ),
